@@ -1,4 +1,4 @@
-# Color Galaxy color data
+# Color Data (With Galaxy Plot)
 
 **31,996 named colors** with their codes in every common color model, CSS and web-safe equivalents, accessibility contrast, color groupings, shades, tints and palettes, plus ready-made chart layouts: a spiral galaxy, a Milky Way ribbon and a hue-by-saturation color picker. Three plain CSV files, built for Tableau and usable anywhere.
 
@@ -105,10 +105,3 @@ The color names come from **meodai/color-names**, © David Aerne and contributor
 - Tints reproduce color-hex.com's rounding exactly; for example, tint 2 of `#142952` is `#425374`.
 - The pickers place colors by hue and saturation only; each box shows its brightest color, so dark and light colors of the same hue and saturation share a box.
 - In `color_relationships.csv`, `related_color_id` is blank for 799,699 of 895,888 rows, because most shades and tints are not named colors.
-
-## Version history
-
-- **2.0.0 (2026-11-18):** First data-source release.
-  - `colors.csv` drops 47 fields: sort and index helpers, the old picker positions, and the triadic, analogous, complementary, related and palette 2–5 hex columns.
-  - `color_galaxy.csv` is added: galaxy, Milky Way and picker layouts for all colors and four color sets.
-- **1.x (2026-10-26 to 2026-10-27):** Proof of concept and testing.
