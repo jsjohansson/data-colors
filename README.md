@@ -1,6 +1,6 @@
-# Color Data (With Galaxy Plot)
+# Color Galaxy color data
 
-**31,996 named colors** with their codes in every common color model, CSS and web-safe equivalents, accessibility contrast, color groupings, shades, tints and palettes, plus ready-made chart layouts: a spiral galaxy, a Milky Way ribbon and a hue-by-saturation color picker. Three plain CSV files, built for Tableau and usable anywhere.
+**31,996 named colors** with their codes in every common color model, CSS and web-safe equivalents, accessibility contrast, color groupings, shades, tints and palettes, plus ready-made chart layouts: a spiral galaxy, a Milky Way ribbon and a hue-by-saturation color picker. Plain CSV files, built for Tableau and usable anywhere.
 
 2026-11-18
 
@@ -12,23 +12,27 @@
 | File | One row per | Rows | Fields | Size |
 |---|---|---:|---:|---:|
 | `colors.csv` | named color | 31,996 | 97 | 21.3 MB |
-| `color_relationships.csv` | color and related color (shade, tint or palette color) | 895,888 | 7 | 35.2 MB |
+| `color_relationship_shade.csv` | color and shade (9 per color) | 287,964 | 7 | 10.9 MB |
+| `color_relationship_tint.csv` | color and tint (9 per color) | 287,964 | 7 | 10.6 MB |
+| `color_relationship_palettes.csv` | color and palette color (Complementary and Neutral pairing, 5 each) | 319,960 | 7 | 13.7 MB |
 | `color_galaxy.csv` | color: chart positions for the galaxy, Milky Way and picker | 31,996 | 44 | 4.1 MB |
 
-All three are comma-separated, UTF-8 with a byte-order mark, Windows line endings, with a header row; an empty value means no value.
+All files are comma-separated, UTF-8 with a byte-order mark, Windows line endings, with a header row; an empty value means no value.
 
 ## How the files relate
 
 ```
 colors.csv  (color_id, one row per color)
-├── color_relationships.csv   many rows per color: color_id → colors.color_id
-│                             related_color_id → colors.color_id when the related color is itself named
-└── color_galaxy.csv          one row per color: color_id → colors.color_id
+├── color_relationship_shade.csv      9 rows per color:  color_id → colors.color_id
+├── color_relationship_tint.csv       9 rows per color:  color_id → colors.color_id
+├── color_relationship_palettes.csv   10 rows per color: color_id → colors.color_id
+│     (in all three, related_color_id → colors.color_id when the related color is itself named)
+└── color_galaxy.csv                  1 row per color:   color_id → colors.color_id
 ```
 
 Use `color_id` (or `hex`) as the key. `name` is not unique: 23 names belong to more than one color. *Tomato*, for example, is both the CSS color `#ff6347` and a meodai/color-names color `#ef4026`.
 
-In Tableau, add all three files from **one** text-file connection, make `colors.csv` the base table, and relate `color_galaxy.csv` (one-to-one) and `color_relationships.csv` (one-to-many) on `color_id`.
+In Tableau, add the files from **one** text-file connection, make `colors.csv` the base table, and relate `color_galaxy.csv` (one-to-one) and each relationship file you need (one-to-many) on `color_id`.
 
 ## What's in `colors.csv`
 
@@ -41,7 +45,7 @@ In Tableau, add all three files from **one** text-file connection, make `colors.
 | Color picker | `picker_cell_id` (36 × 20 grid), `picker_box_col`, `picker_box_row`, `picker_box_top` (108 × 60 boxes) |
 | Related colors | 9 shades, 9 tints, 6 monochromatic steps, and the 5-color Complementary and Neutral pairing palettes |
 
-`color_relationships.csv` holds the shades, tints and both palettes again in long form (28 rows per color), with the named color each one matches, a 4,096-color stand-in for coloring marks, and the text color that reads on it.
+The three `color_relationship_*` files hold the shades, tints and both palettes again in long form (one row per related color, with `relation` and `position`), plus the named color each one matches, a 4,096-color stand-in for coloring marks, and the text color that reads on it.
 
 ## Chart layouts in `color_galaxy.csv`
 
@@ -104,4 +108,4 @@ The color names come from **meodai/color-names**, © David Aerne and contributor
 - `rgb_share_*` is each channel's share of R + G + B, the "RGB %" shown on color-hex.com; `rgb_pct_*` is the usual channel / 255.
 - Tints reproduce color-hex.com's rounding exactly; for example, tint 2 of `#142952` is `#425374`.
 - The pickers place colors by hue and saturation only; each box shows its brightest color, so dark and light colors of the same hue and saturation share a box.
-- In `color_relationships.csv`, `related_color_id` is blank for 799,699 of 895,888 rows, because most shades and tints are not named colors.
+- In the relationship files, `related_color_id` is mostly blank, because most shades, tints and palette colors are not named colors: it is filled for 5,171 shade rows, 12,589 tint rows and 78,429 palette rows.
