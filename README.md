@@ -1,7 +1,5 @@
 # Color Galaxy color data
 
-[Uploading Color Galaxy.twb…]()
-
 <img width="1800" height="1000" alt="Color_Galaxy" src="https://github.com/user-attachments/assets/8d8d7256-1eb3-4d6f-933d-faedfa70b48c" />
 
 **31,996 named colors** with their codes in every common color model, CSS and web-safe equivalents, accessibility contrast, color groupings, shades, tints and palettes, plus ready-made chart layouts: a spiral galaxy, a Milky Way ribbon and a hue-by-saturation color picker. Plain CSV files, built for Tableau and usable anywhere.
