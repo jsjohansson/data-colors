@@ -1071,16 +1071,16 @@
       }
     },
     {
-      "name": "color_relationships",
-      "title": "Color relationships",
-      "description": "One row per color and related color: 9 shades, 9 tints and the 5-color Complementary and Neutral pairing palettes (28 rows per color), in long form for charts and tables.",
-      "path": "color_relationships.csv",
+      "name": "color_relationship_shade",
+      "title": "Shades",
+      "description": "One row per color and shade: its 9 shades (10% steps toward black) in long form for charts and tables.",
+      "path": "color_relationship_shade.csv",
       "profile": "tabular-data-resource",
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 35172831,
-      "hash": "sha256:1097ea215fc3e95792a7655829255f0401bfd58ac1bf8817eac77a1aa763d9b3",
+      "bytes": 10866355,
+      "hash": "sha256:86a57fae8260e149ca54b07830b879fa4d553d840fc437b10ef867275bc466a0",
       "dialect": {
         "delimiter": ",",
         "lineTerminator": "\r\n",
@@ -1101,21 +1101,18 @@
           {
             "name": "relation",
             "type": "string",
-            "description": "Which relation: shade, tint, palette_1 (Complementary palette) or palette_6 (Neutral pairing palette).",
+            "description": "Always shade.",
             "constraints": {
               "required": true,
               "enum": [
-                "palette_1",
-                "palette_6",
-                "shade",
-                "tint"
+                "shade"
               ]
             }
           },
           {
             "name": "position",
             "type": "integer",
-            "description": "Position in the relation: 1-9 for shades and tints (10% steps), 1-5 for palettes; matches the column suffix in colors.csv (shade_3 = relation shade, position 3).",
+            "description": "Shade step 1-9: the color mixed 10% to 90% toward black; matches colors.shade_1 to shade_9.",
             "constraints": {
               "required": true,
               "minimum": 1,
@@ -1145,7 +1142,254 @@
           {
             "name": "related_color_id",
             "type": "integer",
-            "description": "color_id of the named color with exactly this hex; blank when the related color has no name (most shades and tints).",
+            "description": "color_id of the named color with exactly this hex; blank when the related color has no name.",
+            "constraints": {
+              "minimum": 3,
+              "maximum": 31972
+            }
+          },
+          {
+            "name": "related_swatch",
+            "type": "string",
+            "description": "Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette.",
+            "constraints": {
+              "required": true,
+              "pattern": "^#[0-9a-f]{6}$"
+            }
+          },
+          {
+            "name": "related_text",
+            "type": "string",
+            "description": "White or Black, whichever reads better on related_hex (WCAG contrast).",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "Black",
+                "White"
+              ]
+            }
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "primaryKey": [
+          "color_id",
+          "position"
+        ],
+        "foreignKeys": [
+          {
+            "fields": "color_id",
+            "reference": {
+              "resource": "colors",
+              "fields": "color_id"
+            }
+          },
+          {
+            "fields": "related_color_id",
+            "reference": {
+              "resource": "colors",
+              "fields": "color_id"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "color_relationship_tint",
+      "title": "Tints",
+      "description": "One row per color and tint: its 9 tints (10% steps toward white) in long form.",
+      "path": "color_relationship_tint.csv",
+      "profile": "tabular-data-resource",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 10613489,
+      "hash": "sha256:82bf99798f6671bc3493bd9a3565bb634880f1bea9566b20bdbb6876d73ca0c6",
+      "dialect": {
+        "delimiter": ",",
+        "lineTerminator": "\r\n",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "color_id",
+            "type": "integer",
+            "description": "The color the row belongs to; joins colors.color_id.",
+            "constraints": {
+              "required": true,
+              "minimum": 1,
+              "maximum": 31996
+            }
+          },
+          {
+            "name": "relation",
+            "type": "string",
+            "description": "Always tint.",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "tint"
+              ]
+            }
+          },
+          {
+            "name": "position",
+            "type": "integer",
+            "description": "Tint step 1-9: the color mixed 10% to 90% toward white; matches colors.tint_1 to tint_9.",
+            "constraints": {
+              "required": true,
+              "minimum": 1,
+              "maximum": 9,
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ]
+            }
+          },
+          {
+            "name": "related_hex",
+            "type": "string",
+            "description": "The related color, #rrggbb lowercase; same value as the matching column in colors.csv.",
+            "constraints": {
+              "required": true,
+              "pattern": "^#[0-9a-f]{6}$"
+            }
+          },
+          {
+            "name": "related_color_id",
+            "type": "integer",
+            "description": "color_id of the named color with exactly this hex; blank when the related color has no name.",
+            "constraints": {
+              "minimum": 7,
+              "maximum": 31995
+            }
+          },
+          {
+            "name": "related_swatch",
+            "type": "string",
+            "description": "Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette.",
+            "constraints": {
+              "required": true,
+              "pattern": "^#[0-9a-f]{6}$"
+            }
+          },
+          {
+            "name": "related_text",
+            "type": "string",
+            "description": "White or Black, whichever reads better on related_hex (WCAG contrast).",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "Black",
+                "White"
+              ]
+            }
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "primaryKey": [
+          "color_id",
+          "position"
+        ],
+        "foreignKeys": [
+          {
+            "fields": "color_id",
+            "reference": {
+              "resource": "colors",
+              "fields": "color_id"
+            }
+          },
+          {
+            "fields": "related_color_id",
+            "reference": {
+              "resource": "colors",
+              "fields": "color_id"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "color_relationship_palettes",
+      "title": "Palettes",
+      "description": "One row per color and palette color: the 5-color Complementary (palette_1) and Neutral pairing (palette_6) palettes in long form.",
+      "path": "color_relationship_palettes.csv",
+      "profile": "tabular-data-resource",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 13693163,
+      "hash": "sha256:c9437bb0ebf8c333e2d0941e65e92a30162b3c8ac6110ddc21093a75018dafa1",
+      "dialect": {
+        "delimiter": ",",
+        "lineTerminator": "\r\n",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "color_id",
+            "type": "integer",
+            "description": "The color the row belongs to; joins colors.color_id.",
+            "constraints": {
+              "required": true,
+              "minimum": 1,
+              "maximum": 31996
+            }
+          },
+          {
+            "name": "relation",
+            "type": "string",
+            "description": "palette_1 (Complementary palette) or palette_6 (Neutral pairing palette).",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "palette_1",
+                "palette_6"
+              ]
+            }
+          },
+          {
+            "name": "position",
+            "type": "integer",
+            "description": "Color 1-5 in the palette; matches colors.palette_1_1 to palette_1_5 and palette_6_1 to palette_6_5.",
+            "constraints": {
+              "required": true,
+              "minimum": 1,
+              "maximum": 5,
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            }
+          },
+          {
+            "name": "related_hex",
+            "type": "string",
+            "description": "The related color, #rrggbb lowercase; same value as the matching column in colors.csv.",
+            "constraints": {
+              "required": true,
+              "pattern": "^#[0-9a-f]{6}$"
+            }
+          },
+          {
+            "name": "related_color_id",
+            "type": "integer",
+            "description": "color_id of the named color with exactly this hex; blank when the related color has no name.",
             "constraints": {
               "minimum": 1,
               "maximum": 31996

@@ -1,16 +1,18 @@
 # Data dictionary: Color Galaxy color data, version 2.0.0
 
-Field-by-field reference for the three CSV files. Every count, range and list of values below is measured from the files. The example column shows the color **Tomato #ff6347** (color_id 29059). Machine-readable version: [datapackage.json](datapackage.json).
+Field-by-field reference for the CSV files. Every count, range and list of values below is measured from the files. The example column shows the color **Tomato #ff6347** (color_id 29059). Machine-readable version: [datapackage.json](datapackage.json).
 
 ## Files
 
 | File | Grain | Rows | Fields | Key | Size |
 |---|---|---:|---:|---|---:|
 | `colors.csv` | One row per named color: names, codes in every color model, groupings, picker boxes and related colors. | 31,996 | 97 | color_id | 21.3 MB |
-| `color_relationships.csv` | One row per color and related color: 9 shades, 9 tints and the 5-color Complementary and Neutral pairing palettes (28 rows per color), in long form for charts and tables. | 895,888 | 7 | color_id, relation, position | 35.2 MB |
+| `color_relationship_shade.csv` | One row per color and shade: its 9 shades (10% steps toward black) in long form for charts and tables. | 287,964 | 7 | color_id, position | 10.9 MB |
+| `color_relationship_tint.csv` | One row per color and tint: its 9 tints (10% steps toward white) in long form. | 287,964 | 7 | color_id, position | 10.6 MB |
+| `color_relationship_palettes.csv` | One row per color and palette color: the 5-color Complementary (palette_1) and Neutral pairing (palette_6) palettes in long form. | 319,960 | 7 | color_id, relation, position | 13.7 MB |
 | `color_galaxy.csv` | One row per color: X/Y positions for the galaxy and Milky Way charts and box positions for the color picker, each for all colors and for each of the four color sets. | 31,996 | 44 | color_id | 4.1 MB |
 
-All files: comma-separated, UTF-8 with a byte-order mark, header row, Windows (CRLF) line endings, blank = no value. `color_relationships.csv` and `color_galaxy.csv` relate to `colors.csv` on `color_id`.
+All files: comma-separated, UTF-8 with a byte-order mark, header row, Windows (CRLF) line endings, blank = no value. Every other file relates to `colors.csv` on `color_id`.
 
 ## colors.csv
 
@@ -175,28 +177,74 @@ One row per named color: names, codes in every color model, groupings, picker bo
 | `palette_6_4` | string | Neutral pairing palette color 4: a slate (lightness 45%, saturation x 0.15). | 2,880 distinct | #846762 |
 | `palette_6_5` | string | Neutral pairing palette color 5: a charcoal (lightness 15%, saturation x 0.25). | 1,094 distinct | #30201d |
 
-## color_relationships.csv
+## color_relationship_shade.csv
 
-One row per color and related color: 9 shades, 9 tints and the 5-color Complementary and Neutral pairing palettes (28 rows per color), in long form for charts and tables.
+One row per color and shade: its 9 shades (10% steps toward black) in long form for charts and tables.
 
-895,888 rows, 7 fields. Key: color_id, relation, position.
+287,964 rows, 7 fields. Key: color_id, position.
 
 ### Keys
 
 | Field | Type | Description | Values | Example (Tomato #ff6347) |
 |---|---|---|---|---|
 | `color_id` | integer | The color the row belongs to; joins colors.color_id. | 1 to 31,996 | 29059 |
-| `relation` | string | Which relation: shade, tint, palette_1 (Complementary palette) or palette_6 (Neutral pairing palette). | shade (287,964), tint (287,964), palette_1 (159,980), palette_6 (159,980) | shade |
-| `position` | integer | Position in the relation: 1-9 for shades and tints (10% steps), 1-5 for palettes; matches the column suffix in colors.csv (shade_3 = relation shade, position 3). | 1 (127,984), 2 (127,984), 3 (127,984), 4 (127,984), 5 (127,984), 6 (63,992), 7 (63,992), 8 (63,992), 9 (63,992) | 1 |
+| `relation` | string | Always shade. | shade (287,964) | shade |
+| `position` | integer | Shade step 1-9: the color mixed 10% to 90% toward black; matches colors.shade_1 to shade_9. | 1 (31,996), 2 (31,996), 3 (31,996), 4 (31,996), 5 (31,996), 6 (31,996), 7 (31,996), 8 (31,996), 9 (31,996) | 1 |
 
 ### Related color
 
 | Field | Type | Description | Values | Example (Tomato #ff6347) |
 |---|---|---|---|---|
-| `related_hex` | string | The related color, #rrggbb lowercase; same value as the matching column in colors.csv. | 503,445 distinct | #e5593f |
-| `related_color_id` | integer | color_id of the named color with exactly this hex; blank when the related color has no name (most shades and tints). | 1 to 31,996; 799,699 blank | (blank) |
-| `related_swatch` | string | Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette. | 4,078 distinct | #dd5544 |
-| `related_text` | string | White or Black, whichever reads better on related_hex (WCAG contrast). | Black (553,025), White (342,863) | Black |
+| `related_hex` | string | The related color, #rrggbb lowercase; same value as the matching column in colors.csv. | 207,592 distinct | #e5593f |
+| `related_color_id` | integer | color_id of the named color with exactly this hex; blank when the related color has no name. | 3 to 31,972; 282,793 blank | (blank) |
+| `related_swatch` | string | Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette. | 2,603 distinct | #dd5544 |
+| `related_text` | string | White or Black, whichever reads better on related_hex (WCAG contrast). | White (223,519), Black (64,445) | Black |
+
+## color_relationship_tint.csv
+
+One row per color and tint: its 9 tints (10% steps toward white) in long form.
+
+287,964 rows, 7 fields. Key: color_id, position.
+
+### Keys
+
+| Field | Type | Description | Values | Example (Tomato #ff6347) |
+|---|---|---|---|---|
+| `color_id` | integer | The color the row belongs to; joins colors.color_id. | 1 to 31,996 | 29059 |
+| `relation` | string | Always tint. | tint (287,964) | tint |
+| `position` | integer | Tint step 1-9: the color mixed 10% to 90% toward white; matches colors.tint_1 to tint_9. | 1 (31,996), 2 (31,996), 3 (31,996), 4 (31,996), 5 (31,996), 6 (31,996), 7 (31,996), 8 (31,996), 9 (31,996) | 1 |
+
+### Related color
+
+| Field | Type | Description | Values | Example (Tomato #ff6347) |
+|---|---|---|---|---|
+| `related_hex` | string | The related color, #rrggbb lowercase; same value as the matching column in colors.csv. | 188,081 distinct | #ff7259 |
+| `related_color_id` | integer | color_id of the named color with exactly this hex; blank when the related color has no name. | 7 to 31,995; 275,375 blank | (blank) |
+| `related_swatch` | string | Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette. | 3,148 distinct | #ff7755 |
+| `related_text` | string | White or Black, whichever reads better on related_hex (WCAG contrast). | Black (275,177), White (12,787) | Black |
+
+## color_relationship_palettes.csv
+
+One row per color and palette color: the 5-color Complementary (palette_1) and Neutral pairing (palette_6) palettes in long form.
+
+319,960 rows, 7 fields. Key: color_id, relation, position.
+
+### Keys
+
+| Field | Type | Description | Values | Example (Tomato #ff6347) |
+|---|---|---|---|---|
+| `color_id` | integer | The color the row belongs to; joins colors.color_id. | 1 to 31,996 | 29059 |
+| `relation` | string | palette_1 (Complementary palette) or palette_6 (Neutral pairing palette). | palette_1 (159,980), palette_6 (159,980) | palette_1 |
+| `position` | integer | Color 1-5 in the palette; matches colors.palette_1_1 to palette_1_5 and palette_6_1 to palette_6_5. | 1 (63,992), 2 (63,992), 3 (63,992), 4 (63,992), 5 (63,992) | 1 |
+
+### Related color
+
+| Field | Type | Description | Values | Example (Tomato #ff6347) |
+|---|---|---|---|---|
+| `related_hex` | string | The related color, #rrggbb lowercase; same value as the matching column in colors.csv. | 150,796 distinct | #ff6347 |
+| `related_color_id` | integer | color_id of the named color with exactly this hex; blank when the related color has no name. | 1 to 31,996; 241,531 blank | 29059 |
+| `related_swatch` | string | Nearest of 4,096 stand-in colors (each channel rounded to a multiple of 17; at most 8/255 off), so related colors can be colored with a 4,096-color palette. | 3,982 distinct | #ff6644 |
+| `related_text` | string | White or Black, whichever reads better on related_hex (WCAG contrast). | Black (213,403), White (106,557) | Black |
 
 ## color_galaxy.csv
 
